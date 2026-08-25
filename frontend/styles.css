@@ -1,0 +1,771 @@
+/* ==========================================================================
+   Razorpay Agentic Commerce - Modern Stylesheet (2026)
+   Matches Screen 1 Design & Seamless Dark/Light Mode
+   ========================================================================== */
+
+:root {
+  --font-main: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --brand-color: #2b7fff;
+}
+
+body {
+  font-family: var(--font-main);
+}
+
+/* Scrollbar Styling */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Pulse Dot */
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseDot 2s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ==========================================================================
+   Modals & Gateway Popups
+   ========================================================================== */
+
+.glass-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.glass-modal.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  width: 90%;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.25);
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gateway-modal-card {
+  background: #ffffff;
+  border: 1px solid rgba(43, 127, 255, 0.25);
+  border-radius: 20px;
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 92%;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.3);
+  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.gateway-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.gateway-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rzp-mini-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0284c7, #2b7fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rzp-icon-mini {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}
+
+.gateway-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gateway-test-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(43, 127, 255, 0.1);
+  color: #2b7fff;
+  border: 1px solid rgba(43, 127, 255, 0.25);
+}
+
+.gateway-merchant {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.gateway-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.gateway-close-btn:hover {
+  color: #0f172a;
+}
+
+.gateway-order-banner {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.gateway-label {
+  display: block;
+  font-size: 0.68rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.gateway-amount {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-family: var(--font-mono);
+}
+
+.gateway-order-id code {
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: #2b7fff;
+}
+
+.gateway-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  background: #f1f5f9;
+  padding: 0.25rem;
+  border-radius: 10px;
+  margin-bottom: 1.2rem;
+}
+
+.method-tab {
+  padding: 0.5rem 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 8px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.method-tab.active {
+  background: #ffffff;
+  color: #2b7fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.2s ease;
+}
+
+.instant-pay-box, .card-inputs, .upi-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.agent-auth-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.method-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.pay-submit-btn {
+  background: #2b7fff;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pay-submit-btn:hover {
+  background: #1d4ed8;
+  box-shadow: 0 4px 15px rgba(43, 127, 255, 0.3);
+}
+
+.card-inputs .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card-inputs label {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.card-inputs input {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.82rem;
+  color: #0f172a;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-row-half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.upi-box {
+  text-align: center;
+  align-items: center;
+}
+
+.qr-mock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.qr-code-art {
+  width: 100px;
+  height: 100px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2b7fff;
+}
+
+.qr-vpa {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.gateway-footer {
+  margin-top: 1.2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+/* Modal Receipt Result */
+.modal-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.modal-icon-wrap.success-wrap {
+  background: #ecfdf5;
+  color: #10b981;
+}
+
+.modal-receipt-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.receipt-row span {
+  color: #64748b;
+}
+
+.receipt-row strong {
+  color: #0f172a;
+}
+
+.status-tag.success {
+  color: #10b981;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.glass-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: #0f172a;
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: #2b7fff;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  width: 100%;
+}
+
+.primary-btn:hover {
+  background: #1d4ed8;
+}
+
+/* ==========================================================================
+   Dark Theme Variant (Toggleable)
+   ========================================================================== */
+
+body.dark-theme {
+  background-color: #09090b !important;
+  color: #e4e4e7 !important;
+}
+
+body.dark-theme header {
+  background-color: #09090b !important;
+  border-color: #27272a !important;
+}
+
+body.dark-theme main {
+  background-color: #000000 !important;
+}
+
+body.dark-theme .bg-white {
+  background-color: #121215 !important;
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+body.dark-theme .bg-zinc-50,
+body.dark-theme .bg-zinc-100,
+body.dark-theme .bg-zinc-100\/40,
+body.dark-theme .bg-zinc-100\/70 {
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+}
+
+body.dark-theme .text-zinc-900,
+body.dark-theme .text-zinc-800 {
+  color: #ffffff !important;
+}
+
+body.dark-theme .text-zinc-700,
+body.dark-theme .text-zinc-600 {
+  color: #d4d4d8 !important;
+}
+
+body.dark-theme .text-zinc-500,
+body.dark-theme .text-zinc-400 {
+  color: #a1a1aa !important;
+}
+
+body.dark-theme .border-zinc-200,
+body.dark-theme .border-zinc-100 {
+  border-color: #27272a !important;
+}
+
+body.dark-theme input {
+  color: #ffffff !important;
+}
+
+body.dark-theme input::placeholder {
+  color: #71717a !important;
+}
+
+body.dark-theme .modal-card,
+body.dark-theme .gateway-modal-card,
+body.dark-theme #notificationsDropdown,
+body.dark-theme #profileDropdown {
+  background-color: #121215 !important;
+  border-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+body.dark-theme .gateway-title {
+  color: #ffffff !important;
+}
+
+body.dark-theme .gateway-amount {
+  color: #ffffff !important;
+}
+
+body.dark-theme .gateway-order-id code {
+  color: #60a5fa !important;
+}
+
+body.dark-theme .gateway-header {
+  border-color: #27272a !important;
+}
+
+body.dark-theme .gateway-close-btn {
+  color: #71717a !important;
+}
+
+body.dark-theme .gateway-close-btn:hover {
+  color: #ffffff !important;
+}
+
+body.dark-theme .gateway-order-banner,
+body.dark-theme .gateway-methods,
+body.dark-theme .modal-receipt-box {
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+}
+
+body.dark-theme .method-tab {
+  color: #a1a1aa !important;
+}
+
+body.dark-theme .method-tab.active {
+  background-color: #27272a !important;
+  color: #60a5fa !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-theme .method-desc {
+  color: #a1a1aa !important;
+}
+
+body.dark-theme .card-inputs label {
+  color: #a1a1aa !important;
+}
+
+body.dark-theme .card-inputs input {
+  background-color: #18181b !important;
+  border-color: #3f3f46 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .agent-auth-chip {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+body.dark-theme .qr-code-art {
+  background-color: #18181b !important;
+  border-color: #3f3f46 !important;
+}
+
+body.dark-theme .qr-vpa {
+  background-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+body.dark-theme .gateway-footer {
+  border-color: #27272a !important;
+  color: #71717a !important;
+}
+
+/* Conversational Chat Readability in Dark Theme */
+body.dark-theme #dialogueContainer .bg-zinc-50 {
+  background-color: #18181b !important;
+  color: #e4e4e7 !important;
+  border-color: #27272a !important;
+}
+
+body.dark-theme #dialogueContainer .bg-brand-50,
+body.dark-theme #dialogueContainer .bg-blue-50,
+body.dark-theme #dialogueContainer .bg-blue-600\/15 {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+  color: #eff6ff !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+
+body.dark-theme #dialogueContainer strong {
+  color: #ffffff !important;
+}
+
+body.dark-theme #dialogueContainer p {
+  color: inherit !important;
+}
+
+body.dark-theme #dialogueContainer code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #93c5fd !important;
+}
+
+body.dark-theme .scenario-chip {
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+  color: #d4d4d8 !important;
+}
+
+body.dark-theme .scenario-chip:hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   Table Row Hover Styling (High Contrast for Light & Dark)
+   ========================================================================== */
+
+table tbody tr, .table-hover-row {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+table tbody tr:hover, .table-hover-row:hover {
+  background-color: #eff6ff !important; /* Crisp light-blue hover in light theme */
+}
+
+table tbody tr:hover td, .table-hover-row:hover td {
+  color: #0f172a !important;
+}
+
+table tbody tr:hover td .text-zinc-400,
+table tbody tr:hover td .text-zinc-500,
+table tbody tr:hover td .text-zinc-600,
+.table-hover-row:hover td .text-zinc-400,
+.table-hover-row:hover td .text-zinc-500,
+.table-hover-row:hover td .text-zinc-600 {
+  color: #334155 !important; /* Deep readable charcoal on hover */
+}
+
+table tbody tr:hover td .text-brand-600,
+.table-hover-row:hover td .text-brand-600 {
+  color: #1d4ed8 !important;
+  font-weight: 700 !important;
+}
+
+/* Dark Theme Table & Element Hover */
+body.dark-theme table tbody tr:hover,
+html.dark table tbody tr:hover,
+.dark table tbody tr:hover,
+body.dark-theme .table-hover-row:hover,
+html.dark .table-hover-row:hover,
+.dark .table-hover-row:hover {
+  background-color: #1e293b !important; /* Deep rich navy in dark theme */
+}
+
+body.dark-theme table tbody tr:hover td,
+html.dark table tbody tr:hover td,
+.dark table tbody tr:hover td,
+body.dark-theme .table-hover-row:hover td,
+html.dark .table-hover-row:hover td,
+.dark .table-hover-row:hover td {
+  color: #ffffff !important;
+}
+
+body.dark-theme table tbody tr:hover td .text-zinc-400,
+body.dark-theme table tbody tr:hover td .text-zinc-500,
+body.dark-theme table tbody tr:hover td .text-zinc-600,
+html.dark table tbody tr:hover td .text-zinc-400,
+html.dark table tbody tr:hover td .text-zinc-500,
+html.dark table tbody tr:hover td .text-zinc-600,
+body.dark-theme .table-hover-row:hover td .text-zinc-400,
+body.dark-theme .table-hover-row:hover td .text-zinc-500,
+body.dark-theme .table-hover-row:hover td .text-zinc-600 {
+  color: #cbd5e1 !important; /* Bright silver on dark navy */
+}
+
+body.dark-theme table tbody tr:hover td .text-brand-600,
+body.dark-theme table tbody tr:hover td .text-blue-400,
+html.dark table tbody tr:hover td .text-brand-600,
+html.dark table tbody tr:hover td .text-blue-400,
+body.dark-theme .table-hover-row:hover td .text-brand-600,
+body.dark-theme .table-hover-row:hover td .text-blue-400 {
+  color: #60a5fa !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme table tbody tr:hover td .text-emerald-600,
+body.dark-theme table tbody tr:hover td .text-emerald-400,
+html.dark table tbody tr:hover td .text-emerald-600,
+html.dark table tbody tr:hover td .text-emerald-400 {
+  color: #34d399 !important;
+  font-weight: 700 !important;
+}
+
+/* Card & Interactive Element Hover */
+body.dark-theme #productsGrid > div:hover,
+body.dark-theme #cartItemsContainer > div:hover,
+body.dark-theme #catalogFullGrid > div:hover,
+html.dark #productsGrid > div:hover,
+html.dark #cartItemsContainer > div:hover,
+html.dark #catalogFullGrid > div:hover {
+  background-color: #1e293b !important;
+  border-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+body.dark-theme #productsGrid > div:hover span,
+body.dark-theme #cartItemsContainer > div:hover span,
+html.dark #productsGrid > div:hover span,
+html.dark #cartItemsContainer > div:hover span {
+  color: #f8fafc !important;
+}
+
+body.dark-theme thead tr,
+html.dark thead tr {
+  background-color: #18181b !important;
+  border-color: #27272a !important;
+}
+
+body.dark-theme thead th,
+html.dark thead th {
+  color: #a1a1aa !important;
+}
+
+/* ==========================================================================
+   Secure JWT Auth Modal & Pitch-Black Glassmorphism
+   ========================================================================== */
+
+.auth-modal-card {
+  animation: authModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(9, 9, 11, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 50px -10px rgba(99, 102, 241, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes authModalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.auth-modal-card input:focus {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
+}
+
