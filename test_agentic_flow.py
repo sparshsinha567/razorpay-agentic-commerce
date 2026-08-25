@@ -30,7 +30,6 @@ def test_catalog_endpoint():
 def test_auth_guardrails_registration():
     print("\n[TEST 2] Testing User Registration & Guardrail Validation...")
     
-    # 2a. Invalid username (too short / special chars)
     bad_user_resp = client.post("/api/auth/register", json={
         "username": "a!",
         "email": "test@example.com",
@@ -39,7 +38,6 @@ def test_auth_guardrails_registration():
     assert bad_user_resp.status_code == 400 or bad_user_resp.status_code == 422
     print("  ✓ Invalid username correctly blocked by guardrail")
 
-    # 2b. Invalid password (missing symbol / uppercase / digit)
     bad_pass_resp = client.post("/api/auth/register", json={
         "username": "valid_user_01",
         "email": "test@example.com",
@@ -48,7 +46,6 @@ def test_auth_guardrails_registration():
     assert bad_pass_resp.status_code == 400 or bad_pass_resp.status_code == 422
     print("  ✓ Weak password correctly blocked by complexity guardrail")
 
-    # 2c. Valid registration
     valid_resp = client.post("/api/auth/register", json={
         "username": "agent_trader_01",
         "email": "trader01@company.com",
@@ -63,7 +60,6 @@ def test_auth_guardrails_registration():
 def test_auth_login_and_jwt_generation():
     print("\n[TEST 3] Testing Login & JWT Issuance...")
     
-    # 3a. Invalid credentials
     bad_login = client.post("/api/auth/login", json={
         "username": "agent_trader_01",
         "password": "WrongPassword123"
@@ -71,7 +67,6 @@ def test_auth_login_and_jwt_generation():
     assert bad_login.status_code == 401
     print("  ✓ Invalid login correctly rejected with 401")
 
-    # 3b. Valid login (JSON payload)
     good_login = client.post("/api/auth/login", json={
         "username": "agent_trader_01",
         "password": "SecureTrader@2026"
@@ -83,7 +78,6 @@ def test_auth_login_and_jwt_generation():
     token = token_data["access_token"]
     print(f"  ✓ JWT access token issued: {token[:24]}...")
 
-    # 3c. Verify /api/auth/me with Bearer token
     me_resp = client.get("/api/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert me_resp.status_code == 200
     me_data = me_resp.json()
@@ -94,7 +88,6 @@ def test_auth_login_and_jwt_generation():
 def test_unauthenticated_checkout_blocked():
     print("\n[TEST 4] Testing Unauthenticated Execution Rejection (401)...")
     
-    # Phase 2 execution without token
     exec_resp = client.post("/api/agent/execute_checkout", json={
         "amount_in_paise": 249900,
         "currency": "INR",
@@ -108,14 +101,12 @@ def test_unauthenticated_checkout_blocked():
 def test_authenticated_checkout_success(token: str):
     print("\n[TEST 5] Testing Authenticated Scenario A: Normal Checkout (Pro Tier ₹2499)...")
     
-    # Phase 1: Intent & Reasoning
     reason_resp = client.post("/api/agent/reason", json={"query": "Authorize purchase for Autonomous Commerce Pro Tier"})
     assert reason_resp.status_code == 200
     reason_data = reason_resp.json()
     assert reason_data["action_required"] == "EXECUTE_CHECKOUT"
     print(f"  ✓ Phase 1 Formulated Plan: {reason_data['plan']}")
 
-    # Phase 2: Execution with Bearer Token
     payload = reason_data["execution_payload"]
     exec_resp = client.post(
         "/api/agent/execute_checkout",
@@ -132,12 +123,10 @@ def test_authenticated_checkout_success(token: str):
 def test_scenario_b_graceful_failure_out_of_stock(token: str):
     print("\n[TEST 6] Testing Scenario B: Graceful Failure - Out of Stock Item...")
     
-    # Phase 1: Intent & Reasoning
     reason_resp = client.post("/api/agent/reason", json={"query": "Order H100 GPU Cluster Instant Node"})
     assert reason_resp.status_code == 200
     reason_data = reason_resp.json()
     
-    # Phase 2: Execution with Bearer Token
     payload = reason_data["execution_payload"]
     exec_resp = client.post(
         "/api/agent/execute_checkout",
@@ -154,12 +143,10 @@ def test_scenario_b_graceful_failure_out_of_stock(token: str):
 def test_scenario_c_guardrail_budget_violation(token: str):
     print("\n[TEST 7] Testing Scenario C: Guardrail Gate - Budget Limit Violation (> ₹5000)...")
     
-    # Phase 1: Intent & Reasoning
     reason_resp = client.post("/api/agent/reason", json={"query": "Buy Enterprise Unlimited Global License"})
     assert reason_resp.status_code == 200
     reason_data = reason_resp.json()
     
-    # Phase 2: Execution with Over-budget Payload (₹12,500 > ₹5,000)
     payload = reason_data["execution_payload"]
     exec_resp = client.post(
         "/api/agent/execute_checkout",

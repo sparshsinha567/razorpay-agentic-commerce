@@ -6,12 +6,12 @@
   <title>Razorpay AI_Payhelper | Agentic Commerce Dashboard</title>
   <meta name="description" content="AI Growth & Agentic Commerce Gateway built on Razorpay Test-Mode APIs." />
 
-  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -37,25 +37,25 @@
     }
   </script>
 
-  <!-- Favicon -->
+  
   <link rel="icon" type="image/png" href="/static/assets/logo.png" />
 
-  <!-- Lucide Icons -->
+  
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="/static/styles.css" />
+  
+  <link rel="stylesheet" href="/static/styles.css?v=20260825_3" />
 </head>
 <body class="min-h-screen bg-slate-50 text-zinc-900 font-sans antialiased overflow-x-hidden relative transition-colors duration-300">
 
-  <!-- Toast Notification Container -->
+  
   <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- HEADER NAVIGATION -->
+  
   <header class="shrink-0 bg-white border-b border-zinc-200 px-6 sm:px-8 py-3.5 sticky top-0 z-40 shadow-xs">
     <div class="flex justify-between items-center gap-4">
       
-      <!-- Brand Logo -->
+      
       <div class="shrink-0 flex items-center gap-3 cursor-pointer" id="navBrand">
         <div class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex justify-center items-center overflow-hidden shadow-xs p-1">
           <img src="/static/assets/logo.png" alt="Razorpay Logo" class="w-7 h-7 object-contain" />
@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
+      
       <nav class="hidden md:flex justify-center items-center flex-1 gap-1" id="navTabsContainer">
         <button class="nav-tab text-zinc-500 hover:text-zinc-900 text-sm font-medium flex px-3 py-2 items-center gap-2 rounded-lg transition" data-view="dashboard">
           <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
@@ -88,16 +88,16 @@
         </button>
       </nav>
 
-      <!-- Right Header Actions -->
+      
       <div class="shrink-0 flex items-center gap-2.5">
         
-        <!-- Auth User Badge / Sign In Trigger -->
+        
         <button id="authNavBtn" title="Account Authentication & Security" class="rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 flex px-3 py-1.5 items-center gap-2 transition cursor-pointer text-xs font-semibold shadow-xs">
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" id="authNavIcon"></i>
           <span id="authNavText" class="text-zinc-700 dark:text-zinc-200 font-medium truncate max-w-[120px]">Sign In</span>
         </button>
 
-        <!-- Session Limit Pill (Clickable) -->
+        
         <button id="sessionLimitBtn" title="Click to modify safety guardrail threshold" class="rounded-full border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 flex px-3 py-1.5 items-center gap-2 transition cursor-pointer group">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span class="text-zinc-500 text-xs hidden sm:inline">Session Limit:</span>
@@ -105,20 +105,20 @@
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform"></i>
         </button>
 
-        <!-- Theme Toggle Button (Light / Dark) -->
+        
         <button id="themeToggleBtn" title="Toggle Light / Dark Mode" class="w-9 h-9 rounded-lg bg-white border border-zinc-200 flex justify-center items-center text-zinc-600 hover:text-brand-500 hover:border-brand-500/40 transition">
           <i data-lucide="sun" id="sunIcon" class="w-4 h-4 text-amber-500"></i>
           <i data-lucide="moon" id="moonIcon" class="w-4 h-4 text-brand-500 hidden"></i>
         </button>
 
-        <!-- Notifications Bell -->
+        
         <div class="relative">
           <button id="notificationsBtn" title="Agent Notifications & Alerts" class="relative w-9 h-9 rounded-lg bg-white border border-zinc-200 flex justify-center items-center text-zinc-600 hover:text-zinc-900 transition">
             <i data-lucide="bell" class="w-4 h-4"></i>
             <span id="notifBadge" class="w-2 h-2 rounded-full bg-brand-500 absolute right-2 top-2"></span>
           </button>
 
-          <!-- Notifications Dropdown -->
+          
           <div id="notificationsDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-zinc-200 rounded-2xl shadow-xl p-4 z-50 animate-fadeIn">
             <div class="flex justify-between items-center pb-2.5 border-b border-zinc-100 mb-2.5">
               <h4 class="text-xs font-bold text-zinc-900 flex items-center gap-1.5">
@@ -127,18 +127,18 @@
               <button id="markReadBtn" class="text-[11px] text-brand-500 hover:underline">Mark all read</button>
             </div>
             <div class="space-y-2 max-h-60 overflow-y-auto" id="notifList">
-              <!-- Populated dynamically -->
+              
             </div>
           </div>
         </div>
 
-        <!-- Profile Avatar with Telemetry Dropdown -->
+        
         <div class="relative">
           <button id="profileBtn" title="Account Profile & Session" class="w-9 h-9 font-bold rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs flex justify-center items-center shadow-xs hover:scale-105 transition cursor-pointer">
             <span id="profileBtnAvatar"><i data-lucide="user" class="w-4 h-4"></i></span>
           </button>
 
-          <!-- Profile Dropdown -->
+          
           <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white border border-zinc-200 rounded-2xl shadow-xl p-4 z-50 animate-fadeIn">
             <div class="flex items-center gap-3 pb-3 border-b border-zinc-100 mb-3">
               <div id="profileDropdownAvatar" class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 flex items-center justify-center font-bold text-sm">
@@ -191,7 +191,7 @@
       </div>
     </div>
 
-    <!-- Sub-header Breadcrumb & Search Bar -->
+    
     <div class="flex mt-3.5 justify-between items-center gap-4 flex-wrap">
       <div class="flex items-center gap-3">
         <button id="backToWorkspaceBtn" class="text-zinc-400 hover:text-zinc-700 transition">
@@ -218,15 +218,15 @@
     </div>
   </header>
 
-  <!-- MAIN VIEW CONTAINER -->
+  
   <main class="overflow-y-auto bg-zinc-100/40 px-4 sm:px-8 py-6 min-h-[calc(100vh-120px)]">
     
-    <!-- ========================================================================= -->
-    <!-- VIEW 1: AGENTS (Main Active Conversational Workspace from Screen 1) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-agents" class="dashboard-view flex flex-col gap-6">
       
-      <!-- Protocol Header Banner -->
+      
       <div class="flex justify-between items-center">
         <span class="text-zinc-500 text-xs">Agent Invoices & Bounded Checkout Workspace</span>
         <div class="flex items-center gap-2">
@@ -240,10 +240,10 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-3 items-start gap-6">
         
-        <!-- LEFT 2/3 COLUMN -->
+        
         <div class="lg:col-span-2 flex flex-col gap-6">
           
-          <!-- ORDER / INVOICE CARD -->
+          
           <div class="relative bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm overflow-hidden">
             <div class="w-48 h-48 blur-3xl rounded-full bg-brand-500/10 absolute -right-16 -top-16 pointer-events-none"></div>
             
@@ -278,7 +278,7 @@
             </div>
           </div>
 
-          <!-- CONVERSATIONAL CHECKOUT AGENT CARD -->
+          
           <div class="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
             <div class="flex justify-between items-center">
               <div class="flex items-center gap-2">
@@ -290,7 +290,7 @@
               </div>
             </div>
 
-            <!-- Chat Dialogue Stream -->
+            
             <div class="min-h-52 max-h-72 overflow-y-auto flex flex-col gap-3 pr-1 scrollbar-thin" id="dialogueContainer">
               <div class="flex items-start gap-3 text-xs leading-relaxed">
                 <div class="w-8 h-8 shrink-0 rounded-lg bg-brand-500/10 text-brand-500 flex justify-center items-center">
@@ -302,7 +302,7 @@
               </div>
             </div>
 
-            <!-- Waveform Visualizer -->
+            
             <div id="waveformContainer" class="h-4 flex items-center justify-center gap-1 opacity-0 transition-opacity">
               <div class="w-1 h-2 bg-brand-500 rounded-full animate-bounce"></div>
               <div class="w-1 h-3 bg-brand-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
@@ -310,7 +310,7 @@
               <div class="w-1 h-2 bg-brand-500 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
             </div>
 
-            <!-- Quick Trigger Chips -->
+            
             <div class="flex flex-wrap gap-2">
               <button class="scenario-chip rounded-full text-xs font-medium border border-zinc-200 bg-white hover:bg-zinc-50 px-3 py-1.5 text-zinc-700 transition cursor-pointer" data-query="I want to buy the AI Developer Starter Kit">
                 ⚡ Buy Starter Kit (₹499)
@@ -329,7 +329,7 @@
               </button>
             </div>
 
-            <!-- Chat & Voice Input Box -->
+            
             <div class="rounded-xl bg-zinc-50 border border-zinc-200 flex px-3 py-2 items-center gap-2 focus-within:border-brand-500 focus-within:bg-white transition">
               <button id="voiceBtn" title="Push to Talk Speech" class="text-zinc-500 hover:text-brand-500 p-1 rounded transition">
                 <i data-lucide="mic" class="w-4 h-4"></i>
@@ -346,7 +346,7 @@
             </div>
           </div>
 
-          <!-- AGENT GUARDRAILS SETTINGS CARD -->
+          
           <div class="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
             <div>
               <h3 class="font-semibold text-zinc-900 text-base">Agent Guardrails</h3>
@@ -378,7 +378,7 @@
             </div>
           </div>
 
-          <!-- AGENT AUDIT HISTORY TIMELINE CARD -->
+          
           <div class="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm" id="auditCard">
             <div class="flex justify-between items-center mb-6">
               <h3 class="font-semibold text-zinc-900 text-base flex items-center gap-2">
@@ -396,16 +396,16 @@
             </div>
 
             <div class="space-y-5" id="auditTimelineContainer">
-              <!-- Populated dynamically -->
+              
             </div>
           </div>
 
         </div>
 
-        <!-- RIGHT 1/3 COLUMN -->
+        
         <div class="flex flex-col gap-6">
           
-          <!-- DETAILS CARD -->
+          
           <div class="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
             <h3 class="font-semibold text-zinc-900 text-base">Details</h3>
             
@@ -439,7 +439,7 @@
             </div>
           </div>
 
-          <!-- VERIFIED CATALOG CARD -->
+          
           <div class="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
             <div class="flex justify-between items-center">
               <h3 class="font-semibold text-zinc-900 text-base">Verified Catalog</h3>
@@ -447,11 +447,11 @@
             </div>
 
             <div class="flex flex-col gap-2.5" id="productsGrid">
-              <!-- Populated dynamically -->
+              
             </div>
           </div>
 
-          <!-- AGENT CART CARD -->
+          
           <div class="bg-white border border-zinc-200/80 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
             <div class="flex justify-between items-center">
               <h3 class="font-semibold text-zinc-900 text-base">Agent Cart</h3>
@@ -459,7 +459,7 @@
             </div>
 
             <div class="flex flex-col gap-2" id="cartItemsContainer">
-              <!-- Dynamically populated by renderCart() -->
+              
             </div>
 
             <div class="pt-2 border-t border-zinc-100 mt-1" id="cartCheckoutContainer">
@@ -469,7 +469,7 @@
             </div>
           </div>
 
-          <!-- SESSION BUDGET CARD -->
+          
           <div class="rounded-2xl bg-white border border-zinc-200/80 p-5 flex justify-between items-center shadow-sm">
             <div class="flex flex-col">
               <span class="text-zinc-500 text-xs">Session Budget</span>
@@ -488,9 +488,9 @@
 
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 2: DASHBOARD (Overview & GMV Telemetry) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-dashboard" class="dashboard-view hidden space-y-6">
       <div class="bg-gradient-to-r from-brand-500 to-indigo-600 rounded-3xl p-8 text-white shadow-md">
         <span class="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold mb-3 inline-block">Track 01 &middot; AI Growth & Agentic Commerce</span>
@@ -532,9 +532,9 @@
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 3: ORDERS (Settled Transactions Table) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-orders" class="dashboard-view hidden space-y-6">
       <div class="flex justify-between items-center">
         <div>
@@ -559,15 +559,15 @@
             </tr>
           </thead>
           <tbody id="paymentsTableBody" class="divide-y divide-zinc-100 font-mono">
-            <!-- Populated dynamically -->
+            
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 4: ANALYTICS (Explainable Audit Ledger Table) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-analytics" class="dashboard-view hidden space-y-6">
       <div class="flex justify-between items-center">
         <div>
@@ -589,15 +589,15 @@
             </tr>
           </thead>
           <tbody id="fullAuditTableBody" class="divide-y divide-zinc-100 font-mono">
-            <!-- Populated dynamically -->
+            
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 5: CATALOG (Full Product Showcase) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-catalog" class="dashboard-view hidden space-y-6">
       <div>
         <h2 class="text-2xl font-bold text-zinc-900">Verified Product Catalog</h2>
@@ -605,13 +605,13 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="catalogFullGrid">
-        <!-- Populated dynamically -->
+        
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 6: SETTINGS (Theme & Guardrail Configuration) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-settings" class="dashboard-view hidden space-y-6 max-w-xl">
       <div>
         <h2 class="text-2xl font-bold text-zinc-900">Dashboard Settings</h2>
@@ -651,13 +651,13 @@
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 6: SIGN IN (SCREEN 2 INTEGRATION) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-signin" class="dashboard-view hidden flex flex-col items-center justify-center py-6 animate-fadeIn">
       <div class="max-w-md w-full bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-[0_18px_50px_-24px_rgba(15,23,42,0.25)] rounded-2xl p-7 sm:p-8">
         
-        <!-- Screen 2 Header -->
+        
         <div class="flex items-center gap-2.5 mb-5 justify-center">
           <div class="size-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex justify-center items-center">
             <i data-lucide="arrow-up-right" class="size-5 text-[#2b7fff]" stroke-width="2.5"></i>
@@ -673,7 +673,7 @@
           <p class="text-zinc-500 text-xs mt-1">Access your AI-powered commerce workspace</p>
         </div>
 
-        <!-- Alert Messages -->
+        
         <div id="screen2ErrorAlert" class="hidden mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 flex items-start gap-2.5 text-xs text-red-700 dark:text-red-400 font-medium">
           <i data-lucide="alert-circle" class="size-4 shrink-0 text-red-600 mt-0.5"></i>
           <span id="screen2ErrorMsg"></span>
@@ -740,13 +740,13 @@
       </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- VIEW 7: SIGN UP (SCREEN 3 INTEGRATION) -->
-    <!-- ========================================================================= -->
+    
+    
+    
     <div id="view-signup" class="dashboard-view hidden flex flex-col items-center justify-center py-6 animate-fadeIn">
       <div class="max-w-md w-full bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-[0_18px_50px_-24px_rgba(15,23,42,0.25)] rounded-2xl p-7 sm:p-8">
         
-        <!-- Screen 3 Header -->
+        
         <div class="flex items-center gap-2.5 mb-5 justify-center">
           <div class="size-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex justify-center items-center">
             <i data-lucide="arrow-up-right" class="size-5 text-[#2b7fff]" stroke-width="2.5"></i>
@@ -762,7 +762,7 @@
           <p class="text-zinc-500 text-xs mt-1">Start building smarter commerce experiences with AI.</p>
         </div>
 
-        <!-- Alert Messages -->
+        
         <div id="screen3ErrorAlert" class="hidden mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 flex items-start gap-2.5 text-xs text-red-700 dark:text-red-400 font-medium">
           <i data-lucide="alert-circle" class="size-4 shrink-0 text-red-600 mt-0.5"></i>
           <span id="screen3ErrorMsg"></span>
@@ -842,11 +842,11 @@
 
   </main>
 
-  <!-- ========================================================================= -->
-  <!-- MODALS -->
-  <!-- ========================================================================= -->
+  
+  
+  
 
-  <!-- Guardrail Limit Modal -->
+  
   <div id="guardrailModal" class="glass-modal hidden">
     <div class="modal-card max-w-md">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-zinc-200">
@@ -881,11 +881,11 @@
     </div>
   </div>
 
-  <!-- Razorpay Test Gateway Modal -->
+  
   <div id="razorpayGatewayModal" class="glass-modal hidden fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4 transition-all">
     <div class="gateway-modal-card bg-white dark:bg-[#121215] border border-blue-500/30 dark:border-zinc-800 rounded-3xl p-6 w-full max-w-md shadow-2xl transition-all duration-200" style="max-width: 440px; width: 100%; box-sizing: border-box;">
       
-      <!-- Modal Header -->
+      
       <div class="flex justify-between items-center pb-3.5 mb-4 border-b border-zinc-100 dark:border-zinc-800">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center overflow-hidden p-1 shadow-xs shrink-0">
@@ -901,7 +901,7 @@
         <button id="closeGatewayBtn" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white text-2xl leading-none p-1 cursor-pointer transition">&times;</button>
       </div>
 
-      <!-- Order Banner -->
+      
       <div class="bg-zinc-50 dark:bg-[#18181b] border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-3.5 flex justify-between items-center mb-4">
         <div class="flex flex-col">
           <span class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Order Total</span>
@@ -913,7 +913,7 @@
         </div>
       </div>
 
-      <!-- Payment Method Tabs -->
+      
       <div class="grid grid-cols-3 gap-1.5 bg-zinc-100 dark:bg-[#18181b] p-1 rounded-xl mb-4 border border-zinc-200/60 dark:border-zinc-800">
         <button class="method-tab active py-2 px-1 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer text-zinc-600 dark:text-zinc-400" data-tab="instant">
           <i data-lucide="zap" class="w-3.5 h-3.5"></i> 1-Click Pay
@@ -926,7 +926,7 @@
         </button>
       </div>
 
-      <!-- Tab 1: Instant Pay -->
+      
       <div class="tab-content active" id="tabInstant" style="display: block;">
         <div class="flex flex-col gap-3.5 w-full" style="display: flex; flex-direction: column; width: 100%;">
           <div class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 self-start">
@@ -943,7 +943,7 @@
         </div>
       </div>
 
-      <!-- Tab 2: Test Card -->
+      
       <div class="tab-content" id="tabCard" style="display: none;">
         <div class="flex flex-col gap-3 w-full" style="display: flex; flex-direction: column; width: 100%; box-sizing: border-box;">
           <div class="flex flex-col gap-1 w-full" style="width: 100%;">
@@ -967,7 +967,7 @@
         </div>
       </div>
 
-      <!-- Tab 3: UPI / QR -->
+      
       <div class="tab-content" id="tabUpi" style="display: none;">
         <div class="flex flex-col items-center gap-3.5 text-center w-full" style="display: flex; flex-direction: column; width: 100%; box-sizing: border-box;">
           <div class="flex flex-col items-center gap-2">
@@ -984,7 +984,7 @@
         </div>
       </div>
 
-      <!-- Footer -->
+      
       <div class="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
         <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-500"></i>
         <span>100% End-to-End Encrypted &bull; Razorpay Agentic Commerce API 2026</span>
@@ -993,52 +993,52 @@
     </div>
   </div>
 
-  <!-- Payment Result / Receipt Modal -->
-  <div id="paymentResultModal" class="glass-modal hidden">
-    <div class="modal-card">
-      <div class="modal-icon-wrap success-wrap" id="modalIconWrap">
-        <i data-lucide="check-circle-2" class="modal-icon"></i>
+  
+  <div id="paymentResultModal" class="glass-modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4 transition-all">
+    <div class="modal-card max-w-md w-full bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-2xl text-zinc-900 dark:text-white animate-fadeIn">
+      <div class="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80 flex items-center justify-center mb-4">
+        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
       </div>
-      <h3 id="modalTitle">Razorpay Payment Captured</h3>
-      <p id="modalDesc">Order ID: <code id="modalOrderId">-</code></p>
+      <h3 id="modalTitle" class="font-bold text-lg text-zinc-900 dark:text-white">Razorpay Payment Captured</h3>
+      <p id="modalDesc" class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Order ID: <code id="modalOrderId" class="text-blue-600 dark:text-blue-400 font-mono font-semibold">-</code></p>
       
-      <div class="modal-receipt-box">
-        <div class="receipt-row">
-          <span>Item</span>
-          <strong id="modalItemName">-</strong>
+      <div class="bg-zinc-50 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 my-4 space-y-3">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-zinc-500 dark:text-zinc-400">Item</span>
+          <strong id="modalItemName" class="font-semibold text-zinc-900 dark:text-white text-right max-w-[200px] truncate">-</strong>
         </div>
-        <div class="receipt-row">
-          <span>Amount Paid</span>
-          <strong id="modalAmount">-</strong>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-zinc-500 dark:text-zinc-400">Amount Paid</span>
+          <strong id="modalAmount" class="font-bold font-mono text-sm sm:text-base text-emerald-600 dark:text-emerald-400">-</strong>
         </div>
-        <div class="receipt-row">
-          <span>Gateway Status</span>
-          <span class="status-tag success">CAPTURED (TEST MODE)</span>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-zinc-500 dark:text-zinc-400">Gateway Status</span>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">CAPTURED (TEST MODE)</span>
         </div>
-        <div class="receipt-row">
-          <span>Payment Reference</span>
-          <code id="modalAuditRef">-</code>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-zinc-500 dark:text-zinc-400">Payment Reference</span>
+          <code id="modalAuditRef" class="font-mono text-xs text-zinc-800 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700/60">-</code>
         </div>
       </div>
-      <button id="closePaymentResultBtn" onclick="document.getElementById('paymentResultModal').classList.add('hidden')" class="w-full mt-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold transition cursor-pointer">
+      <button id="closePaymentResultBtn" onclick="document.getElementById('paymentResultModal').classList.add('hidden')" class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition cursor-pointer shadow-lg shadow-blue-500/25">
         Close Receipt
       </button>
     </div>
   </div>
 
-  <!-- POPUP AUTH MODAL (SCREEN 2 & SCREEN 3 EXACT CARDS) -->
+  
   <div id="authModal" class="glass-modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-md p-4 transition-all overflow-y-auto">
     
-    <!-- POPUP WRAPPER WITH CLOSE BUTTON -->
+    
     <div class="relative w-full max-w-md my-auto animate-fadeIn">
       <button id="closeAuthModalBtn" class="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white flex items-center justify-center shadow-lg transition cursor-pointer" title="Close">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
 
-      <!-- SCREEN 2 POPUP CARD (SIGN IN) -->
+      
       <div id="popupScreen2Card" class="w-full bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-[0_18px_50px_-24px_rgba(15,23,42,0.25)] rounded-2xl p-7 sm:p-8 text-zinc-950 dark:text-white">
         
-        <!-- Header -->
+        
         <div class="flex items-center gap-2.5 mb-5">
           <div class="size-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex justify-center items-center">
             <i data-lucide="arrow-up-right" class="size-5 text-[#2b7fff]" stroke-width="2.5"></i>
@@ -1054,7 +1054,7 @@
           <p class="text-zinc-500 text-xs mt-1">Access your AI-powered commerce workspace</p>
         </div>
 
-        <!-- Alert messages -->
+        
         <div id="popupAuthErrorAlert" class="hidden mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 flex items-start gap-2.5 text-xs text-red-700 dark:text-red-400 font-medium">
           <i data-lucide="alert-circle" class="size-4 shrink-0 text-red-600 mt-0.5"></i>
           <span id="popupAuthErrorMsg"></span>
@@ -1120,10 +1120,10 @@
         </div>
       </div>
 
-      <!-- SCREEN 3 POPUP CARD (SIGN UP) -->
+      
       <div id="popupScreen3Card" class="hidden w-full bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 shadow-[0_18px_50px_-24px_rgba(15,23,42,0.25)] rounded-2xl p-7 sm:p-8 text-zinc-950 dark:text-white">
         
-        <!-- Header -->
+        
         <div class="flex items-center gap-2.5 mb-4">
           <div class="size-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex justify-center items-center">
             <i data-lucide="arrow-up-right" class="size-5 text-[#2b7fff]" stroke-width="2.5"></i>
@@ -1139,7 +1139,7 @@
           <p class="text-zinc-500 text-xs mt-1">Start building smarter commerce experiences with AI.</p>
         </div>
 
-        <!-- Alert messages -->
+        
         <div id="popupSignUpErrorAlert" class="hidden mb-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 flex items-start gap-2.5 text-xs text-red-700 dark:text-red-400 font-medium">
           <i data-lucide="alert-circle" class="size-4 shrink-0 text-red-600 mt-0.5"></i>
           <span id="popupSignUpErrorMsg"></span>
@@ -1219,6 +1219,6 @@
     </div>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=20260825_4"></script>
 </body>
 </html>

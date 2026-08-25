@@ -1,12 +1,7 @@
-/**
- * TailwindCSS v4.0 compatible replacement for `tailwindcss-animate`.
- *
- * @author Luca Bosin <https://github.com/Wombosvideo>
- * @license MIT
- */
+
 
 :root {
-  /* @property declarations for animation variables, to prevent inheritance */
+  
   @property --tw-animation-delay {
     syntax: "*";
     inherits: false;
@@ -22,7 +17,7 @@
   @property --tw-animation-duration {
     syntax: "*";
     inherits: false;
-    /* does not have an initial value in order for the `--tw-duration` variable to work */
+    
   }
 
   @property --tw-animation-fill-mode {
@@ -111,7 +106,6 @@
 }
 
 @theme inline {
-  /* Predefined values */
 
   --animation-delay-0: 0s;
   --animation-delay-75: 75ms;
@@ -159,8 +153,6 @@
   --percentage-95: 0.95;
   --percentage-100: 1;
   --percentage-translate-full: 1;
-
-  /* Animations and keyframes */
 
   --animate-in: enter var(--tw-animation-duration, var(--tw-duration, 150ms))
     var(--tw-ease, ease) var(--tw-animation-delay, 0s)
@@ -320,8 +312,6 @@
     }
   }
 }
-
-/* Utility classes */
 
 @utility animation-duration-* {
   --tw-animation-duration: calc(--value(number) * 1ms);

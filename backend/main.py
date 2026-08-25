@@ -10,7 +10,6 @@ import re
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 
-# Ensure stdout/stderr uses UTF-8 on Windows
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -18,7 +17,6 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-# Ensure site-packages path is accessible
 site_pkg_path = r"D:\Lib\site-packages"
 if os.path.exists(site_pkg_path) and site_pkg_path not in sys.path:
     sys.path.insert(0, site_pkg_path)
@@ -37,7 +35,6 @@ from backend.catalog import PRODUCTS, ADDONS, get_product_by_id, find_product_by
 
 app = FastAPI(
     title="Razorpay Agentic Commerce Gateway",
-    description="Autonomous Bounded & Gated Checkout Agent with Two-Phase Execution and Explainable Audit Trail",
     version="2.0.26"
 )
 
@@ -49,9 +46,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------
-# SECURITY CONFIGURATION & JWT SYSTEM (RFC 7519 HS256)
-# ---------------------------------------------------------
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-jwt-key-replace-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
@@ -59,13 +61,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
 
 def hash_password(password: str) -> str:
-    """Cryptographically secure PBKDF2-HMAC-SHA256 password hashing."""
     salt = secrets.token_hex(16)
     pwd_hash = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000)
     return f"pbkdf2_sha256$100000${salt}${pwd_hash.hex()}"
 
 def verify_password(password: str, hashed: str) -> bool:
-    """Verifies plain password against stored hash."""
     try:
         if hashed.startswith("pbkdf2_sha256$"):
             parts = hashed.split("$")
@@ -135,7 +135,6 @@ def decode_access_token(token: str) -> dict:
         )
     return payload
 
-# Pre-seeded in-memory DB with demo user
 user_db: Dict[str, dict] = {
     "demo_user": {
         "username": "demo_user",
@@ -163,9 +162,6 @@ def get_current_user(token: Optional[str] = Depends(oauth2_scheme)) -> dict:
         raise credentials_exception
     return user
 
-# ---------------------------------------------------------
-# RAZORPAY CLIENT WRAPPER (Handles live test keys or graceful mock simulator)
-# ---------------------------------------------------------
 class SafeRazorpayClient:
     def __init__(self, key_id: str, key_secret: str):
         self.key_id = key_id
@@ -204,9 +200,6 @@ class SafeRazorpayClient:
 
 rzp_gateway = SafeRazorpayClient(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)
 
-# ---------------------------------------------------------
-# AUDIT TRAIL DATA STRUCTURE
-# ---------------------------------------------------------
 class AuditLogEntry(BaseModel):
     id: str
     timestamp: str
@@ -240,7 +233,6 @@ def log_audit(phase: str, action: str, status: str, details: str, item_id: Optio
     print(f"[AUDIT LEDGER] [{status}] [{entry.user}] {entry.action}: {entry.details}")
     return entry
 
-# Initialize audit ledger with startup entry
 log_audit(
     phase="System",
     action="GATEWAY_INITIALIZE",
@@ -250,9 +242,6 @@ log_audit(
     user="system"
 )
 
-# ---------------------------------------------------------
-# GUARDRAILS & INPUT SCHEMA VALIDATION
-# ---------------------------------------------------------
 USERNAME_REGEX = r"^[a-zA-Z0-9_]{3,20}$"
 PASSWORD_REGEX = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_\-#])[A-Za-z\d@$!%*?&_\-#]{8,64}$"
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
@@ -292,14 +281,7 @@ class LoginJsonSchema(BaseModel):
     username: str
     password: str
 
-# ---------------------------------------------------------
-# GUARDRAILS & INPUT SCHEMA VALIDATION (Phase 2 Gates)
-# ---------------------------------------------------------
 class OrderRequestSchema(BaseModel):
-    """
-    Strict input schema validation for AI-generated financial transactions.
-    The execution engine must adhere to this schema without exception.
-    """
     amount_in_paise: int = Field(..., description="Total amount in paise. Must be > 100.")
     currency: str = Field(default="INR", pattern="^INR$")
     receipt_id: str = Field(..., max_length=40)
@@ -318,7 +300,7 @@ class OrderRequestSchema(BaseModel):
         return value
 
 class ChatMessage(BaseModel):
-    role: str  # 'user', 'assistant', 'system'
+    role: str
     content: str
 
 class Phase1ChatRequest(BaseModel):
@@ -330,6 +312,11 @@ class PaymentVerifyRequest(BaseModel):
     razorpay_order_id: str
     razorpay_payment_id: str
     razorpay_signature: str
+    amount_inr: Optional[float] = None
+    amount_paise: Optional[int] = None
+    item_id: Optional[str] = None
+    item_name: Optional[str] = None
+    username: Optional[str] = "demo_user"
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -359,16 +346,8 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         }
     )
 
-# ---------------------------------------------------------
-# AUTHENTICATION ENDPOINTS
-# ---------------------------------------------------------
-
 @app.post("/api/auth/register", status_code=status.HTTP_201_CREATED)
 def register_user(payload: SignUpSchema):
-    """
-    Secure registration endpoint enforcing strict username & password guardrails.
-    Hashes password using PBKDF2-HMAC-SHA256.
-    """
     hashed = hash_password(payload.password)
     user_db[payload.username] = {
         "username": payload.username,
@@ -393,14 +372,9 @@ def register_user(payload: SignUpSchema):
 
 @app.post("/api/auth/login")
 async def login_user(request: Request):
-    """
-    JWT issuance endpoint. Accepts OAuth2 URL-encoded form data or JSON body.
-    Returns HS256 Bearer access token.
-    """
     username = None
     password = None
 
-    # Check Content-Type for Form-encoded or JSON data
     content_type = request.headers.get("content-type", "")
     if "application/x-www-form-urlencoded" in content_type or "multipart/form-data" in content_type:
         try:
@@ -427,7 +401,6 @@ async def login_user(request: Request):
     clean_identifier = str(username).strip().lower()
     user = user_db.get(clean_identifier)
     if not user:
-        # Search by email if not found by username
         for u in user_db.values():
             if u.get("email", "").strip().lower() == clean_identifier:
                 user = u
@@ -467,7 +440,6 @@ async def login_user(request: Request):
 
 @app.get("/api/auth/me")
 def get_current_user_profile(current_user: dict = Depends(get_current_user)):
-    """Protected endpoint: Returns current authenticated user profile."""
     return {
         "status": "authenticated",
         "username": current_user["username"],
@@ -475,13 +447,8 @@ def get_current_user_profile(current_user: dict = Depends(get_current_user)):
         "full_name": current_user.get("full_name", current_user["username"])
     }
 
-# ---------------------------------------------------------
-# API ENDPOINTS
-# ---------------------------------------------------------
-
 @app.get("/api/catalog")
 def get_catalog():
-    """Returns agent-readable verified product catalog."""
     return {
         "status": "success",
         "catalog": PRODUCTS,
@@ -493,13 +460,6 @@ def get_catalog():
 
 @app.post("/api/agent/reason")
 def phase1_reasoning(payload: Phase1ChatRequest):
-    """
-    PHASE 1: High-Context Intent & Reasoning Engine.
-    1. Evaluates user intent (text/transcription).
-    2. Queries catalog for pricing & availability.
-    3. Formulates a transparent, explainable plan.
-    4. Determines whether to trigger Phase 2 deterministic execution.
-    """
     query = payload.query.strip()
     log_audit(
         phase="Phase 1: Reasoning",
@@ -511,9 +471,7 @@ def phase1_reasoning(payload: Phase1ChatRequest):
 
     matched_product = find_product_by_query(query)
 
-    # If the user is asking general questions or greeting
     if not matched_product:
-        # Check if they are asking what's available
         if any(w in query.lower() for w in ["catalog", "what can i buy", "products", "options", "hello", "hi", "help"]):
             available_names = [f"• {p['name']} (₹{p['price_inr']})" + (" [Out of Stock]" if not p['in_stock'] else "") for p in PRODUCTS]
             msg = "Here are the available products in our verified catalog:\n" + "\n".join(available_names) + "\n\nTell me which one you would like to purchase!"
@@ -535,7 +493,6 @@ def phase1_reasoning(payload: Phase1ChatRequest):
                 "orb_state": "idle"
             }
 
-    # Product found - formulate reasoning plan
     plan_text = (
         f"Identified item: {matched_product['name']} (ID: {matched_product['id']}). "
         f"Price: ₹{matched_product['price_inr']} ({matched_product['price_paise']} paise). "
@@ -543,7 +500,6 @@ def phase1_reasoning(payload: Phase1ChatRequest):
         f"Guardrail Check (Limit ₹5000): {'PASS' if matched_product['price_paise'] <= MAX_TRANSACTION_LIMIT_INR else 'FAIL - EXCEEDS SESSION LIMIT'}."
     )
 
-    # Check if this item exceeds budget guardrails
     if matched_product['price_paise'] > MAX_TRANSACTION_LIMIT_INR:
         log_audit(
             phase="Phase 1: Reasoning",
@@ -571,7 +527,6 @@ def phase1_reasoning(payload: Phase1ChatRequest):
             "orb_state": "alert"
         }
 
-    # Check if item is out of stock
     if not matched_product['in_stock']:
         log_audit(
             phase="Phase 1: Reasoning",
@@ -599,7 +554,6 @@ def phase1_reasoning(payload: Phase1ChatRequest):
             "orb_state": "pulse"
         }
 
-    # Standard valid item - compute growth upsell
     upsell_info = get_upsell_recommendation(matched_product['id'])
     upsell_msg = ""
     if upsell_info:
@@ -633,10 +587,6 @@ def phase1_reasoning(payload: Phase1ChatRequest):
         "orb_state": "pulse"
     }
 
-# ---------------------------------------------------------
-# A2A (AGENT-TO-AGENT / AI BUYER) PROTOCOL ENDPOINTS
-# Spec: NPCI UAP / AP2 / x402 Agent-to-Agent Commerce 2026
-# ---------------------------------------------------------
 class A2ABuyerRequest(BaseModel):
     buyer_agent_id: str = Field(..., description="Unique autonomous buyer agent identifier")
     protocol_version: str = Field(default="ACP/2.0-UAP", description="Agent Commerce Protocol specification")
@@ -646,10 +596,6 @@ class A2ABuyerRequest(BaseModel):
 
 @app.get("/api/v1/protocol/agent_manifest")
 def get_agent_commerce_manifest():
-    """
-    Returns the Machine-Readable Agentic Commerce Discovery Manifest.
-    Allows external AI buyers (AutoGPT, Claude, etc.) to discover products & capabilities.
-    """
     return {
         "protocol": "ACP/2.0-Razorpay-UAP",
         "merchant": "Razorpay Agentic Commerce Demo Merchant",
@@ -667,10 +613,6 @@ def get_agent_commerce_manifest():
 
 @app.post("/api/v1/protocol/a2a_checkout")
 def handle_a2a_machine_checkout(req: A2ABuyerRequest):
-    """
-    Machine-to-Machine Autonomous Transaction Endpoint.
-    Executed by AI Buyer agents without human UI intervention.
-    """
     prod = get_product_by_id(req.item_id)
     if not prod:
         raise HTTPException(status_code=404, detail=f"SKU {req.item_id} not found in verified catalog.")
@@ -691,7 +633,6 @@ def handle_a2a_machine_checkout(req: A2ABuyerRequest):
             "alternative_skus": ["PROD_STARTER_01", "PROD_PRO_02"]
         }
 
-    # Budget limit verification
     if prod["price_paise"] > MAX_TRANSACTION_LIMIT_INR or prod["price_paise"] > req.max_budget_paise:
         log_audit(
             phase="A2A Protocol",
@@ -704,7 +645,6 @@ def handle_a2a_machine_checkout(req: A2ABuyerRequest):
         )
         raise HTTPException(status_code=400, detail="Transaction amount exceeds allowed guardrail threshold.")
 
-    # Execute Razorpay Order
     order_data = {
         "amount": prod["price_paise"],
         "currency": "INR",
@@ -742,20 +682,30 @@ def handle_a2a_machine_checkout(req: A2ABuyerRequest):
 
 @app.get("/api/agent/stats")
 def get_agentic_stats():
-    """Returns revenue growth, conversion, and safety telemetry."""
     total_gmv = 0.0
     orders_count = 0
     guardrail_blocks = 0
     a2a_count = 0
+    settled_keys = set()
 
     for entry in audit_ledger:
-        if entry.action in ["RAZORPAY_ORDER_CREATED", "A2A_ORDER_SETTLED"] and entry.status == "SUCCESS":
-            if entry.amount_inr:
+        if entry.action == "PAYMENT_CAPTURED" and entry.status == "SUCCESS":
+            pay_id = (entry.payload.get("razorpay_payment_id") if (entry.payload and isinstance(entry.payload, dict)) else None) or entry.id
+            if pay_id not in settled_keys and entry.amount_inr:
                 total_gmv += entry.amount_inr
                 orders_count += 1
-        if "A2A" in entry.action:
+                settled_keys.add(pay_id)
+        elif entry.action == "A2A_ORDER_SETTLED" and entry.status == "SUCCESS":
+            order_id = (entry.payload.get("id") if (entry.payload and isinstance(entry.payload, dict)) else None) or entry.id
+            if order_id not in settled_keys and entry.amount_inr:
+                total_gmv += entry.amount_inr
+                orders_count += 1
+                settled_keys.add(order_id)
+
+        if "A2A" in entry.action or "A2A" in entry.phase:
             a2a_count += 1
-        if entry.status == "BLOCKED" or entry.guardrail_status == "BLOCKED_BY_GUARDRAIL":
+
+        if entry.status in ["BLOCKED", "FAILED"] or entry.guardrail_status in ["BLOCKED_BY_GUARDRAIL", "BLOCKED_BY_POLICY", "STOCK_EXHAUSTED", "REJECTED_OUT_OF_STOCK"]:
             guardrail_blocks += 1
 
     return {
@@ -768,21 +718,12 @@ def get_agentic_stats():
 
 @app.post("/api/agent/execute_checkout")
 def execute_agent_checkout(payload: OrderRequestSchema, current_user: dict = Depends(get_current_user)):
-    """
-    PHASE 2: Deterministic & Bounded Tool Execution.
-    Protected: Only authenticated sessions with valid JWT can trigger money actions.
-    1. Schema validation enforced by Pydantic (Budget <= ₹5,000, Currency == INR).
-    2. Graceful failure for stock checks.
-    3. Creation of Razorpay Order via Gateway.
-    4. Full explainability via Audit Trail logging with authenticated user id.
-    """
     username = current_user["username"]
     item_id = payload.item_id
     amount_paise = payload.amount_in_paise
     amount_inr = amount_paise / 100.0
 
     try:
-        # Step 1: Log Phase 2 Entry
         log_audit(
             phase="Phase 2: Execution",
             action="SCHEMA_VALIDATION",
@@ -795,7 +736,6 @@ def execute_agent_checkout(payload: OrderRequestSchema, current_user: dict = Dep
             user=username
         )
 
-        # Step 2: Graceful Failure Requirement (Mock / Live Inventory Verification)
         prod = get_product_by_id(item_id)
         if item_id == "OUT_OF_STOCK_ITEM_01" or (prod and not prod.get("in_stock", True)):
             log_audit(
@@ -822,7 +762,6 @@ def execute_agent_checkout(payload: OrderRequestSchema, current_user: dict = Dep
                 }
             )
 
-        # Step 3: Gateway Order Creation
         order_data = {
             "amount": amount_paise,
             "currency": payload.currency,
@@ -838,7 +777,6 @@ def execute_agent_checkout(payload: OrderRequestSchema, current_user: dict = Dep
 
         rzp_order = rzp_gateway.create_order(data=order_data)
 
-        # Step 4: Log Successful Order Creation in Audit Ledger
         log_audit(
             phase="Phase 2: Execution",
             action="RAZORPAY_ORDER_CREATED",
@@ -868,7 +806,6 @@ def execute_agent_checkout(payload: OrderRequestSchema, current_user: dict = Dep
         }
 
     except ValueError as ve:
-        # Pydantic or custom guardrail validation exception
         error_msg = str(ve)
         log_audit(
             phase="Phase 2: Execution",
@@ -905,9 +842,6 @@ def execute_agent_checkout(payload: OrderRequestSchema, current_user: dict = Dep
 
 @app.post("/api/agent/verify_payment")
 def verify_payment(payload: PaymentVerifyRequest):
-    """
-    Verifies payment signature and records completion in audit ledger.
-    """
     generated_signature = None
     is_valid = True
 
@@ -924,20 +858,56 @@ def verify_payment(payload: PaymentVerifyRequest):
             is_valid = False
             print(f"Signature verify error: {e}")
 
+    amount_paise = payload.amount_paise
+    if (amount_paise is None or amount_paise == 0) and payload.amount_inr is not None and payload.amount_inr > 0:
+        amount_paise = int(payload.amount_inr * 100)
+
+    if amount_paise is None or amount_paise == 0:
+        for entry in audit_ledger:
+            if (entry.payload and (entry.payload.get("id") == payload.razorpay_order_id or entry.payload.get("order_id") == payload.razorpay_order_id)) or (entry.item_id and entry.item_id == payload.item_id):
+                if entry.amount_inr and entry.amount_inr > 0:
+                    amount_paise = int(entry.amount_inr * 100)
+                    break
+
+    if amount_paise is None or amount_paise == 0:
+        target_sku = payload.item_id
+        if not target_sku and payload.razorpay_order_id:
+            if "STARTER" in payload.razorpay_order_id or "0001" in payload.razorpay_order_id:
+                target_sku = "PROD_STARTER_01"
+            elif "PRO" in payload.razorpay_order_id or "0002" in payload.razorpay_order_id:
+                target_sku = "PROD_PRO_02"
+            elif "0003" in payload.razorpay_order_id:
+                target_sku = "OUT_OF_STOCK_ITEM_01"
+            elif "0004" in payload.razorpay_order_id or "ENTERPRISE" in payload.razorpay_order_id:
+                target_sku = "PROD_ENTERPRISE_UNLIMITED"
+        
+        prod = get_product_by_id(target_sku) if target_sku else None
+        if prod:
+            amount_paise = prod.get("price_paise", 249900)
+        else:
+            amount_paise = 249900
+
+    amount_inr_display = (amount_paise / 100.0)
+    user_name = payload.username or "demo_user"
+
     if is_valid:
         log_audit(
             phase="Phase 2: Settlement",
             action="PAYMENT_CAPTURED",
             status="SUCCESS",
-            details=f"Payment {payload.razorpay_payment_id} verified for order {payload.razorpay_order_id}.",
+            details=f"Payment {payload.razorpay_payment_id} verified for order {payload.razorpay_order_id} (₹{amount_inr_display:.2f}).",
             payload=payload.dict(),
-            guardrail_status="SETTLED"
+            item_id=payload.item_id,
+            amount_paise=amount_paise,
+            guardrail_status="SETTLED",
+            user=user_name
         )
         return {
             "status": "verified",
             "message": "Payment verified and recorded in the audit ledger.",
             "payment_id": payload.razorpay_payment_id,
             "order_id": payload.razorpay_order_id,
+            "amount_inr": amount_inr_display,
             "orb_state": "success"
         }
     else:
@@ -947,13 +917,15 @@ def verify_payment(payload: PaymentVerifyRequest):
             status="FAILED",
             details=f"Signature mismatch for order {payload.razorpay_order_id}.",
             payload=payload.dict(),
-            guardrail_status="SIGNATURE_MISMATCH"
+            item_id=payload.item_id,
+            amount_paise=amount_paise,
+            guardrail_status="SIGNATURE_MISMATCH",
+            user=user_name
         )
         raise HTTPException(status_code=400, detail="Invalid payment signature.")
 
 @app.get("/api/agent/audit_trail")
 def get_audit_trail():
-    """Returns the live explainable audit ledger."""
     return {
         "status": "success",
         "total_entries": len(audit_ledger),
@@ -966,7 +938,6 @@ def get_audit_trail():
 
 @app.post("/api/agent/clear_audit")
 def clear_audit():
-    """Resets audit ledger for test demonstrations."""
     global audit_ledger
     audit_ledger = []
     log_audit(
@@ -986,7 +957,6 @@ class UpdateConfigRequest(BaseModel):
 
 @app.post("/api/agent/update_config")
 def update_config(payload: UpdateConfigRequest):
-    """Updates runtime configuration and safety session bounds."""
     global MAX_TRANSACTION_LIMIT_INR, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, rzp_gateway
     if payload.max_limit_inr is not None:
         MAX_TRANSACTION_LIMIT_INR = int(payload.max_limit_inr * 100)
@@ -1013,7 +983,6 @@ def update_config(payload: UpdateConfigRequest):
 
 @app.get("/api/agent/notifications")
 def get_notifications():
-    """Returns active agent telemetry notifications and security alerts."""
     return {
         "notifications": [
             {
@@ -1043,7 +1012,6 @@ def get_notifications():
         ]
     }
 
-# Serve Screen 2 (Sign In) and Screen 3 (Sign Up) Vite Apps
 root_project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 frontend_dir = os.path.join(root_project_dir, "frontend")
 login_dist_dir = os.path.join(root_project_dir, "login", "Screen 2", "dist")
@@ -1062,5 +1030,3 @@ if os.path.exists(frontend_dir):
     @app.get("/")
     def serve_frontend_index():
         return FileResponse(os.path.join(frontend_dir, "index.html"))
-
-

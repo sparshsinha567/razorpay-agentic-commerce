@@ -1,15 +1,8 @@
-/* ==========================================================================
-   Razorpay AI_Payhelper - Full Frontend Orchestration (2026)
-   Matches Screen 1 Architecture & Integrates with Bounded Backend Engine
-   ========================================================================== */
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize Lucide Icons
   if (window.lucide) {
     window.lucide.createIcons();
   }
 
-  // Toast Helper
   const toastContainer = document.getElementById("toastContainer");
   function showToast(message, type = "info") {
     if (!toastContainer) return;
@@ -43,7 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3500);
   }
 
-  // Navigation & View Switching
   const headerViewTitle = document.getElementById("headerViewTitle");
   const headerViewSubtitle = document.getElementById("headerViewSubtitle");
   const backToWorkspaceBtn = document.getElementById("backToWorkspaceBtn");
@@ -101,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (backToWorkspaceBtn) backToWorkspaceBtn.addEventListener("click", () => switchView("agents"));
   if (navBrand) navBrand.addEventListener("click", () => switchView("agents"));
 
-  // Theme Management (Light / Dark)
   const themeToggleBtn = document.getElementById("themeToggleBtn");
   const sunIcon = document.getElementById("sunIcon");
   const moonIcon = document.getElementById("moonIcon");
@@ -142,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (settingsThemeLightBtn) settingsThemeLightBtn.addEventListener("click", () => { setTheme("light"); showToast("Light Mode active", "info"); });
   if (settingsThemeDarkBtn) settingsThemeDarkBtn.addEventListener("click", () => { setTheme("dark"); showToast("Dark Mode active", "info"); });
 
-  // Guardrail Limit State & Controls
   let currentSessionLimit = 5000;
   const navLimitDisplay = document.getElementById("navLimitDisplay");
   const cardLimitDisplay = document.getElementById("cardLimitDisplay");
@@ -224,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Header Search Bar
   const searchLogsInput = document.getElementById("searchLogsInput");
   const clearSearchBtn = document.getElementById("clearSearchBtn");
 
@@ -260,7 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Notifications & Profile Dropdowns
   const notificationsBtn = document.getElementById("notificationsBtn");
   const notificationsDropdown = document.getElementById("notificationsDropdown");
   const notifBadge = document.getElementById("notifBadge");
@@ -318,9 +306,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------------------------------------------------------
-  // USER AUTHENTICATION & JWT SESSION MANAGEMENT
-  // ---------------------------------------------------------
   let currentUser = null;
   let currentJwtToken = localStorage.getItem("agent_jwt_token") || null;
   let isAuthSignUpMode = false;
@@ -431,15 +416,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // =========================================================================
-  // SCREEN 2 & SCREEN 3 EXACT POPUP MODAL ORCHESTRATION
-  // =========================================================================
   const authModal = document.getElementById("authModal");
   const closeAuthModalBtn = document.getElementById("closeAuthModalBtn");
   const popupScreen2Card = document.getElementById("popupScreen2Card");
   const popupScreen3Card = document.getElementById("popupScreen3Card");
 
-  // Popup Screen 2 Elements (Sign In)
   const popupLoginForm = document.getElementById("popupLoginForm");
   const popupIdentifierInput = document.getElementById("popupIdentifierInput");
   const popupPasswordInput = document.getElementById("popupPasswordInput");
@@ -457,7 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const popupAuthSuccessAlert = document.getElementById("popupAuthSuccessAlert");
   const popupAuthSuccessMsg = document.getElementById("popupAuthSuccessMsg");
 
-  // Popup Screen 3 Elements (Sign Up)
   const popupSignUpForm = document.getElementById("popupSignUpForm");
   const popupFullNameInput = document.getElementById("popupFullNameInput");
   const popupUsernameInput = document.getElementById("popupUsernameInput");
@@ -745,9 +725,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // =========================================================================
-  // SCREEN 2 (SIGN IN VIEW) & SCREEN 3 (SIGN UP VIEW) INTEGRATION
-  // =========================================================================
   const screen2LoginForm = document.getElementById("screen2LoginForm");
   const screen2IdentifierInput = document.getElementById("screen2IdentifierInput");
   const screen2PasswordInput = document.getElementById("screen2PasswordInput");
@@ -874,7 +851,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // SCREEN 3 (SIGN UP VIEW)
   const screen3SignUpForm = document.getElementById("screen3SignUpForm");
   const screen3FullNameInput = document.getElementById("screen3FullNameInput");
   const screen3UsernameInput = document.getElementById("screen3UsernameInput");
@@ -957,7 +933,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initial check on load
   checkAuthStatus();
 
   if (profileBtn) {
@@ -1003,7 +978,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Current Transaction & Dynamic Cart State
   let cartItems = [
     {
       id: "PROD_PRO_02",
@@ -1054,7 +1028,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = cartItems.length;
     const totalInr = getCartTotalInr();
 
-    // Update Cart Badge Count
     if (cartCountBadge) {
       cartCountBadge.textContent = count;
       if (count === 0) {
@@ -1064,12 +1037,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Update Session Budget Card Usage
     if (sessionBudgetUsage) {
       sessionBudgetUsage.textContent = `₹${totalInr.toLocaleString()} / ₹${currentSessionLimit.toLocaleString()} used`;
     }
 
-    // Render Cart Items List
     if (cartItemsContainer) {
       if (count === 0) {
         cartItemsContainer.innerHTML = `
@@ -1113,7 +1084,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Update Cart Checkout Container & Button
     const cartCheckoutContainer = document.getElementById("cartCheckoutContainer");
     const cartCheckoutTotal = document.getElementById("cartCheckoutTotal");
     const cartCheckoutBtn = document.getElementById("cartCheckoutBtn");
@@ -1133,6 +1103,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (totalInr > currentSessionLimit) {
         cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 transition cursor-pointer";
         cartCheckoutBtn.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4 shrink-0"></i><span>🚫 Exceeds Limit (₹${totalInr.toLocaleString()} > ₹${currentSessionLimit.toLocaleString()})</span>`;
+      } else if (status.toLowerCase().includes("paid") || status.toLowerCase().includes("settled")) {
+        cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer";
+        cartCheckoutBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i><span>✓ Settled (₹${totalInr.toLocaleString()}) &bull; New Checkout</span>`;
       } else {
         cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 transition cursor-pointer";
         cartCheckoutBtn.innerHTML = `<i data-lucide="credit-card" class="w-4 h-4 shrink-0"></i><span>Checkout ( ₹${totalInr.toLocaleString()} )</span>`;
@@ -1140,6 +1113,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (window.lucide) window.lucide.createIcons();
+  }
+
+  function generateUniqueOrderId() {
+    const seq = Math.floor(100000 + Math.random() * 900000);
+    return `order_rzp_${seq}`;
   }
 
   const cartCheckoutBtn = document.getElementById("cartCheckoutBtn");
@@ -1158,8 +1136,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (guardrailModal) guardrailModal.classList.remove("hidden");
         return;
       }
+
+      const freshOrderId = generateUniqueOrderId();
       triggerRazorpayCheckout({
-        order_id: currentInvoiceNumber ? currentInvoiceNumber.textContent.replace('#', 'order_') : `order_rzp_${Date.now().toString().slice(-6)}`,
+        order_id: freshOrderId,
         amount_inr: totalInr,
         product_name: cartItems.length === 1 ? cartItems[0].name : `${cartItems.length} Cart Items`
       });
@@ -1203,11 +1183,23 @@ document.addEventListener("DOMContentLoaded", () => {
         currentStatusBadge.textContent = "Open · Verified";
       }
     }
+
+    if (headerPayBtn) {
+      if (status.toLowerCase().includes("paid") || status.toLowerCase().includes("settled")) {
+        headerPayBtn.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xs transition cursor-pointer";
+        headerPayBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> Order Settled · New Order`;
+      } else {
+        headerPayBtn.className = "bg-brand-500 hover:bg-brand-600 text-white font-medium text-sm px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-xs transition cursor-pointer";
+        headerPayBtn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i> Authorize & Pay`;
+      }
+    }
+    if (window.lucide) window.lucide.createIcons();
   }
 
   function addToCart(prod) {
     if (!prod) return;
     activeProduct = prod;
+    currentActiveOrder = null;
     cartItems.push({ ...prod, instanceId: Date.now() + Math.random() });
     renderCart();
     updateInvoiceDisplay(activeProduct, null, "Open · Verified");
@@ -1230,7 +1222,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Conversational Agent & Two-Phase Reasoning Engine
   const dialogueContainer = document.getElementById("dialogueContainer");
   const chatInput = document.getElementById("chatInput");
   const sendBtn = document.getElementById("sendBtn");
@@ -1301,7 +1292,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Check Authentication before Phase 2 Execution
       if (!currentJwtToken) {
         if (orbStateBadge) orbStateBadge.textContent = "AUTH REQUIRED";
         showToast("Authentication required to authorize payment actions", "alert");
@@ -1373,7 +1363,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Push-to-Talk Voice
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SpeechRecognition) {
     const recognition = new SpeechRecognition();
@@ -1398,7 +1387,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (voiceQuickBtn) voiceQuickBtn.addEventListener("click", () => { try { recognition.start(); } catch (e) { console.warn(e); } });
   }
 
-  // A2A Machine Buyer Simulation
   const runA2A = async () => {
     switchView("agents");
     appendMessage("user", "[A2A Protocol Call] Autonomous Buyer Agent 'Agent-AutoBuy-X09' purchasing 'PROD_STARTER_01' (Limit: ₹5,000)...");
@@ -1416,6 +1404,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await resp.json();
       await fetchAuditTrail();
+      await fetchStats();
 
       if (resp.ok) {
         updateActiveOrderDisplay({
@@ -1424,9 +1413,9 @@ document.addEventListener("DOMContentLoaded", () => {
           price_inr: 499,
           price_paise: 49900,
           in_stock: true
-        }, data.order_id, "Paid");
+        }, data.order_id, "Paid · Settled");
         showToast(`A2A Order ${data.order_id} settled autonomously!`, "success");
-        appendMessage("assistant", `🤖 **A2A Protocol Settled!** Order **${data.order_id}** created for **₹${data.amount_inr}** on behalf of buyer \`${data.buyer_agent_id}\`.`);
+        appendMessage("assistant", `🤖 **A2A Protocol Settled!** Order **${data.order_id}** created for **₹${data.amount_inr}** on behalf of buyer \`${data.buyer_agent_id}\`. Live GMV & settlements updated.`);
       } else {
         showToast("A2A Protocol intercepted", "alert");
         appendMessage("assistant", `A2A Intercepted: ${data.detail || "Refused by guardrail"}`);
@@ -1440,7 +1429,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (simulateA2ABtn) simulateA2ABtn.addEventListener("click", runA2A);
   if (simulateA2AHeaderBtn) simulateA2AHeaderBtn.addEventListener("click", runA2A);
 
-  // Razorpay Gateway Modal Logic
   const razorpayGatewayModal = document.getElementById("razorpayGatewayModal");
   const closeGatewayBtn = document.getElementById("closeGatewayBtn");
   const gwOrderAmount = document.getElementById("gwOrderAmount");
@@ -1502,8 +1490,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentActiveOrder && activeProduct) {
       currentActiveOrder = {
         order_id: `order_rzp_${Date.now().toString().slice(-6)}`,
-        amount_inr: activeProduct.price_inr,
-        product_name: activeProduct.name
+        amount_inr: getCartTotalInr() || activeProduct.price_inr,
+        product_name: cartItems.length === 1 ? cartItems[0].name : (cartItems.length > 1 ? `${cartItems.length} Cart Items` : activeProduct.name)
       };
     }
     const order = currentActiveOrder;
@@ -1513,33 +1501,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const simPaymentId = `pay_${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 5)}`;
     
     try {
-      await fetch("/api/agent/verify_payment", {
+      const resp = await fetch("/api/agent/verify_payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           razorpay_order_id: order.order_id,
           razorpay_payment_id: simPaymentId,
-          razorpay_signature: "simulated_secure_signature"
+          razorpay_signature: "simulated_secure_signature",
+          amount_inr: order.amount_inr,
+          amount_paise: Math.round(order.amount_inr * 100),
+          item_id: activeProduct ? activeProduct.id : "PROD_CART",
+          item_name: order.product_name || (activeProduct ? activeProduct.name : "Cart Checkout"),
+          username: currentUser ? currentUser.username : "demo_user"
         })
       });
 
       await fetchAuditTrail();
+      await fetchStats();
+
       capturedPayments.unshift({
         payment_id: simPaymentId,
         order_id: order.order_id,
-        item_id: activeProduct.id,
-        item_name: order.product_name || activeProduct.name,
+        item_id: activeProduct ? activeProduct.id : "PROD_CART",
+        item_name: order.product_name || (activeProduct ? activeProduct.name : "Cart Checkout"),
         amount_inr: order.amount_inr,
         method: methodName,
         timestamp: new Date().toISOString()
       });
       renderPaymentsTable();
 
-      updateActiveOrderDisplay(activeProduct, order.order_id, "Paid");
+      updateActiveOrderDisplay(activeProduct, order.order_id, "Paid · Settled");
       showToast(`Payment of ₹${order.amount_inr.toFixed(2)} captured successfully!`, "success");
+      appendMessage("assistant", `✅ **Payment Verified!** Order **${order.order_id}** for **₹${order.amount_inr.toFixed(2)}** successfully settled via ${methodName}. Payment Ref: \`${simPaymentId}\`. Real-time GMV and settlements updated.`);
 
       modalOrderId.textContent = order.order_id;
-      modalItemName.textContent = order.product_name || activeProduct.name;
+      modalItemName.textContent = order.product_name || (activeProduct ? activeProduct.name : "Cart Checkout");
       modalAmount.textContent = `₹${order.amount_inr.toFixed(2)}`;
       modalAuditRef.textContent = simPaymentId;
       paymentResultModal.classList.remove("hidden");
@@ -1588,7 +1584,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (upiPayBtn) upiPayBtn.addEventListener("click", () => processGatewayPayment("Simulated UPI"));
 
+  if (closeGatewayBtn) {
+    closeGatewayBtn.addEventListener("click", () => {
+      razorpayGatewayModal.classList.add("hidden");
+    });
+  }
+
+  if (razorpayGatewayModal) {
+    razorpayGatewayModal.addEventListener("click", (e) => {
+      if (e.target === razorpayGatewayModal) {
+        razorpayGatewayModal.classList.add("hidden");
+      }
+    });
+  }
+
   if (closeModalBtn) closeModalBtn.addEventListener("click", () => paymentResultModal.classList.add("hidden"));
+
+  const closePaymentResultBtn = document.getElementById("closePaymentResultBtn");
+  if (closePaymentResultBtn) {
+    closePaymentResultBtn.addEventListener("click", () => paymentResultModal.classList.add("hidden"));
+  }
+
+  if (paymentResultModal) {
+    paymentResultModal.addEventListener("click", (e) => {
+      if (e.target === paymentResultModal) {
+        paymentResultModal.classList.add("hidden");
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (razorpayGatewayModal) razorpayGatewayModal.classList.add("hidden");
+      if (paymentResultModal) paymentResultModal.classList.add("hidden");
+      if (guardrailModal) guardrailModal.classList.add("hidden");
+      if (authModal) authModal.classList.add("hidden");
+    }
+  });
 
   if (headerPayBtn) {
     headerPayBtn.addEventListener("click", () => {
@@ -1604,19 +1636,46 @@ document.addEventListener("DOMContentLoaded", () => {
         if (guardrailModal) guardrailModal.classList.remove("hidden");
         return;
       }
+      const freshOrderId = generateUniqueOrderId();
       triggerRazorpayCheckout({
-        order_id: currentInvoiceNumber ? currentInvoiceNumber.textContent.replace('#', 'order_') : `order_rzp_${Date.now().toString().slice(-6)}`,
+        order_id: freshOrderId,
         amount_inr: totalInr,
         product_name: cartItems.length === 1 ? cartItems[0].name : `${cartItems.length} Cart Items`
       });
     });
   }
 
-  // Audit History Ledger
   const auditTimelineContainer = document.getElementById("auditTimelineContainer");
   const auditCounter = document.getElementById("auditCounter");
   const clearAuditBtn = document.getElementById("clearAuditBtn");
   const fullAuditTableBody = document.getElementById("fullAuditTableBody");
+
+  function syncPaymentsFromAudit(ledger) {
+    if (!ledger || !Array.isArray(ledger)) return;
+    const settledEntries = ledger.filter(e => 
+      (e.action === "PAYMENT_CAPTURED" || e.action === "A2A_ORDER_SETTLED") && 
+      (e.status === "SUCCESS" || e.guardrail_status === "SETTLED" || e.guardrail_status === "PASSED")
+    );
+    
+    settledEntries.forEach(entry => {
+      const orderId = (entry.payload && (entry.payload.razorpay_order_id || entry.payload.id || entry.payload.order_id)) || entry.id;
+      const paymentId = (entry.payload && (entry.payload.razorpay_payment_id || entry.payload.receipt)) || entry.id.replace("audit_", "pay_");
+      const existing = capturedPayments.find(p => p.order_id === orderId || p.payment_id === paymentId);
+      if (!existing && entry.amount_inr) {
+        const prod = catalogList.find(p => p.id === entry.item_id);
+        capturedPayments.unshift({
+          payment_id: paymentId,
+          order_id: orderId,
+          item_id: entry.item_id || "SKU_SETTLED",
+          item_name: prod ? prod.name : (entry.details || "Settled Agent Transaction"),
+          amount_inr: entry.amount_inr,
+          method: entry.action === "A2A_ORDER_SETTLED" ? "A2A Machine Protocol" : "1-Click Agent Auth",
+          timestamp: entry.timestamp || new Date().toISOString()
+        });
+      }
+    });
+    renderPaymentsTable();
+  }
 
   async function fetchAuditTrail() {
     try {
@@ -1625,6 +1684,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fullAuditLedger = data.ledger || [];
       renderAuditTimeline(fullAuditLedger);
       renderFullAuditTable(fullAuditLedger);
+      syncPaymentsFromAudit(fullAuditLedger);
       if (auditCounter) auditCounter.textContent = `${data.total_entries} Logged Events`;
     } catch (e) {
       console.error(e);
@@ -1710,15 +1770,16 @@ document.addEventListener("DOMContentLoaded", () => {
     clearAuditBtn.addEventListener("click", async () => {
       try {
         await fetch("/api/agent/clear_audit", { method: "POST" });
+        capturedPayments = [];
         await fetchAuditTrail();
-        showToast("Audit history re-initialized", "success");
+        await fetchStats();
+        showToast("Audit history & telemetry re-initialized", "success");
       } catch (e) {
         console.error(e);
       }
     });
   }
 
-  // Catalog Loader (Mini & Full Grid)
   const productsGrid = document.getElementById("productsGrid");
   const catalogFullGrid = document.getElementById("catalogFullGrid");
   const catalogCount = document.getElementById("catalogCount");
@@ -1810,7 +1871,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
   }
 
-  // Payments Table Renderer
   const paymentsTableBody = document.getElementById("paymentsTableBody");
   function renderPaymentsTable() {
     if (!paymentsTableBody) return;
@@ -1824,7 +1884,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="p-4 text-brand-600 font-bold font-mono">${p.payment_id}</td>
         <td class="p-4 font-mono">${p.order_id}</td>
         <td class="p-4 font-sans font-medium">${p.item_name}</td>
-        <td class="p-4 text-emerald-600 font-bold font-mono">₹${p.amount_inr.toLocaleString()}.00</td>
+        <td class="p-4 text-emerald-600 font-bold font-mono">₹${Number(p.amount_inr || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
         <td class="p-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">SETTLED (TEST)</span></td>
         <td class="p-4 text-xs">${p.method} &bull; ${timeStr}</td>
       `;
@@ -1832,7 +1892,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Overview Stats
   const statGMV = document.getElementById("statGMV");
   const statOrders = document.getElementById("statOrders");
   const statBlocks = document.getElementById("statBlocks");
@@ -1842,16 +1901,15 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const resp = await fetch("/api/agent/stats");
       const data = await resp.json();
-      if (statGMV) statGMV.textContent = `₹${data.total_gmv_inr.toLocaleString()}.00`;
-      if (statOrders) statOrders.textContent = `${data.orders_created} Orders`;
-      if (statBlocks) statBlocks.textContent = `${data.guardrail_blocks_intercepted} Blocks`;
-      if (statA2A) statA2A.textContent = `${data.a2a_ai_buyer_requests} Machine Calls`;
+      if (statGMV) statGMV.textContent = `₹${Number(data.total_gmv_inr || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      if (statOrders) statOrders.textContent = `${data.orders_created} ${data.orders_created === 1 ? 'Order' : 'Orders'}`;
+      if (statBlocks) statBlocks.textContent = `${data.guardrail_blocks_intercepted} ${data.guardrail_blocks_intercepted === 1 ? 'Block' : 'Blocks'}`;
+      if (statA2A) statA2A.textContent = `${data.a2a_ai_buyer_requests} ${data.a2a_ai_buyer_requests === 1 ? 'Machine Call' : 'Machine Calls'}`;
     } catch (e) {
       console.error(e);
     }
   }
 
-  // Download PDF Invoice
   const downloadPdfBtn = document.getElementById("downloadPdfBtn");
   if (downloadPdfBtn) {
     downloadPdfBtn.addEventListener("click", () => {
@@ -1958,7 +2016,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initial Load
   fetchCatalog();
   fetchAuditTrail();
   fetchStats();

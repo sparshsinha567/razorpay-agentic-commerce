@@ -1,7 +1,3 @@
-"""
-Product Catalog for Razorpay Agentic Commerce
-"""
-
 PRODUCTS = [
     {
         "id": "PROD_STARTER_01",
@@ -83,7 +79,6 @@ def get_product_by_id(product_id: str):
 
 def find_product_by_query(query: str):
     query_lower = query.lower()
-    # Check for bundle queries first
     for prod in PRODUCTS:
         if prod["id"].lower() in query_lower:
             return prod
@@ -100,11 +95,10 @@ def find_product_by_query(query: str):
     return None
 
 def get_upsell_recommendation(base_product_id: str):
-    """Upsell & Cross-Sell Agent Engine (Revenue Maximizer)"""
     if base_product_id == "PROD_STARTER_01":
         return {
             "type": "cross_sell",
-            "addon": ADDONS[0],  # +50k tokens
+            "addon": ADDONS[0],
             "bundle_price_inr": 798,
             "bundle_price_paise": 79800,
             "pitch": "Add the +50K Token Burst Pack for just ₹299 (Bundle Total: ₹798)."
@@ -112,7 +106,7 @@ def get_upsell_recommendation(base_product_id: str):
     elif base_product_id == "PROD_PRO_02":
         return {
             "type": "cross_sell",
-            "addon": ADDONS[1],  # VIP Route
+            "addon": ADDONS[1],
             "bundle_price_inr": 2998,
             "bundle_price_paise": 299800,
             "pitch": "Upgrade with Priority VIP Gateway SLA for ₹499 (Bundle Total: ₹2,998)."
