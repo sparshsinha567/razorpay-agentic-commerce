@@ -1508,7 +1508,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) window.lucide.createIcons();
   }
 
+  let isProcessingPayment = false;
+
   async function processGatewayPayment(methodName) {
+    if (isProcessingPayment) return;
+    isProcessingPayment = true;
+
+    if (instantPayBtn) instantPayBtn.disabled = true;
+    if (cardPayBtn) cardPayBtn.disabled = true;
+    if (upiPayBtn) upiPayBtn.disabled = true;
+
     if (!currentActiveOrder && activeProduct) {
       currentActiveOrder = {
         order_id: `order_rzp_${Date.now().toString().slice(-6)}`,
@@ -1517,7 +1526,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
     const order = currentActiveOrder;
-    if (!order) return;
+    if (!order) {
+      isProcessingPayment = false;
+      return;
+    }
 
     razorpayGatewayModal.classList.add("hidden");
     const simPaymentId = `pay_${Date.now().toString(36)}_${Math.random().toString(36).substr(2, 5)}`;
@@ -1541,15 +1553,18 @@ document.addEventListener("DOMContentLoaded", () => {
       await fetchAuditTrail();
       await fetchStats();
 
-      capturedPayments.unshift({
-        payment_id: simPaymentId,
-        order_id: order.order_id,
-        item_id: activeProduct ? activeProduct.id : "PROD_CART",
-        item_name: order.product_name || (activeProduct ? activeProduct.name : "Cart Checkout"),
-        amount_inr: order.amount_inr,
-        method: methodName,
-        timestamp: new Date().toISOString()
-      });
+      const exists = capturedPayments.some(p => p.payment_id === simPaymentId);
+      if (!exists) {
+        capturedPayments.unshift({
+          payment_id: simPaymentId,
+          order_id: order.order_id,
+          item_id: activeProduct ? activeProduct.id : "PROD_CART",
+          item_name: order.product_name || (activeProduct ? activeProduct.name : "Cart Checkout"),
+          amount_inr: order.amount_inr,
+          method: methodName,
+          timestamp: new Date().toISOString()
+        });
+      }
       renderPaymentsTable();
 
       updateActiveOrderDisplay(activeProduct, order.order_id, "Paid · Settled");
@@ -1565,6 +1580,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error(err);
       showToast("Payment verification error", "error");
+    } finally {
+      isProcessingPayment = false;
+      if (instantPayBtn) instantPayBtn.disabled = false;
+      if (cardPayBtn) cardPayBtn.disabled = false;
+      if (upiPayBtn) upiPayBtn.disabled = false;
     }
   }
 
@@ -1908,6 +1928,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderPaymentsTable() {
     if (!paymentsTableBody) return;
     paymentsTableBody.innerHTML = "";
+
+    const seenIds = new Set();
+    const uniquePayments = [];
+    capturedPayments.forEach(p => {
+      if (!seenIds.has(p.payment_id)) {
+        seenIds.add(p.payment_id);
+        uniquePayments.push(p);
+      }
+    });
+    capturedPayments = uniquePayments;
 
     capturedPayments.forEach(p => {
       const timeStr = new Date(p.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
