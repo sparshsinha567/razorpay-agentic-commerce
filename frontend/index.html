@@ -386,11 +386,12 @@
                 <span>Agent Audit History</span>
               </h3>
               <div class="flex items-center gap-2">
-                <span id="auditCounter" class="text-xs px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-600 font-mono">
+                <span id="auditCounter" class="text-xs px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-mono">
                   0 Logged Events
                 </span>
-                <button id="clearAuditBtn" title="Reset Audit History" class="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded-lg transition">
-                  <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                <button id="clearAuditBtn" title="Reset Audit History" class="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg transition border border-transparent hover:border-red-200 dark:hover:border-red-800/60 cursor-pointer">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                  <span>Reset</span>
                 </button>
               </div>
             </div>
@@ -569,10 +570,16 @@
     
     
     <div id="view-analytics" class="dashboard-view hidden space-y-6">
-      <div class="flex justify-between items-center">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 class="text-2xl font-bold text-zinc-900">Explainable Audit Ledger</h2>
-          <p class="text-xs text-zinc-500 mt-0.5">Cryptographic log of all two-phase reasoning and financial tool executions.</p>
+          <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Explainable Audit Ledger</h2>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Cryptographic log of all two-phase reasoning and financial tool executions.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="resetAuditLedgerBtn" class="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/60 transition shadow-sm cursor-pointer">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Reset Audit Logs</span>
+          </button>
         </div>
       </div>
 
@@ -647,6 +654,15 @@
               Save Limit
             </button>
           </div>
+        </div>
+
+        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+          <label class="font-semibold text-sm text-zinc-900 dark:text-white block mb-1">Audit Ledger & Telemetry</label>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3">Clear all transaction events, reasoning trace history, and mock settlement logs.</p>
+          <button id="settingsResetAuditBtn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-600 dark:text-red-400 font-semibold text-xs transition cursor-pointer">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <span>Reset Audit Logs & History</span>
+          </button>
         </div>
       </div>
     </div>

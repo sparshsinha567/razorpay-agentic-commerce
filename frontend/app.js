@@ -1808,19 +1808,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (clearAuditBtn) {
-    clearAuditBtn.addEventListener("click", async () => {
-      try {
-        await fetch("/api/agent/clear_audit", { method: "POST" });
+  const resetAuditLedgerBtn = document.getElementById("resetAuditLedgerBtn");
+  const settingsResetAuditBtn = document.getElementById("settingsResetAuditBtn");
+
+  async function handleResetAudit() {
+    try {
+      const resp = await fetch("/api/agent/clear_audit", { method: "POST" });
+      if (resp.ok) {
         capturedPayments = [];
+        renderPaymentsTable();
         await fetchAuditTrail();
         await fetchStats();
-        showToast("Audit history & telemetry re-initialized", "success");
-      } catch (e) {
-        console.error(e);
+        if (window.lucide) lucide.createIcons();
+        showToast("Audit history & telemetry reset successfully", "success");
+      } else {
+        showToast("Failed to reset audit logs", "error");
       }
-    });
+    } catch (e) {
+      console.error("Reset audit error:", e);
+      showToast("Error resetting audit logs", "error");
+    }
   }
+
+  if (clearAuditBtn) clearAuditBtn.addEventListener("click", handleResetAudit);
+  if (resetAuditLedgerBtn) resetAuditLedgerBtn.addEventListener("click", handleResetAudit);
+  if (settingsResetAuditBtn) settingsResetAuditBtn.addEventListener("click", handleResetAudit);
 
   const productsGrid = document.getElementById("productsGrid");
   const catalogFullGrid = document.getElementById("catalogFullGrid");
