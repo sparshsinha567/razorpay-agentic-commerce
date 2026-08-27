@@ -385,37 +385,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAuthUI(user);
   }
 
-  function clearAuthSession() {
-    setAuthSession(null, null);
-    showToast("Signed out. Protected checkout requires sign-in.", "info");
-  }
-
-  async function checkAuthStatus() {
-    const token = localStorage.getItem("agent_jwt_token");
-    if (!token) {
-      updateAuthUI(null);
-      return false;
-    }
-    try {
-      const resp = await fetch("/api/auth/me", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      if (resp.ok) {
-        const data = await resp.json();
-        setAuthSession(token, data);
-        return true;
-      } else {
-        localStorage.removeItem("agent_jwt_token");
-        localStorage.removeItem("agent_user_name");
-        updateAuthUI(null);
-        return false;
-      }
-    } catch (e) {
-      console.warn("Auth check error:", e);
-      return false;
-    }
-  }
-
   const authModal = document.getElementById("authModal");
   const closeAuthModalBtn = document.getElementById("closeAuthModalBtn");
   const popupScreen2Card = document.getElementById("popupScreen2Card");
@@ -475,6 +444,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeAuthModal() {
     if (authModal) authModal.classList.add("hidden");
+  }
+
+  function clearAuthSession() {
+    setAuthSession(null, null);
+    showToast("Signed out. Please sign in to access the workspace.", "info");
+    openAuthModal(false);
+  }
+
+  async function checkAuthStatus() {
+    const token = localStorage.getItem("agent_jwt_token");
+    if (!token) {
+      updateAuthUI(null);
+      openAuthModal(false); // Automatically popup Login modal on first visit
+      return false;
+    }
+    try {
+      const resp = await fetch("/api/auth/me", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        setAuthSession(token, data);
+        closeAuthModal();
+        return true;
+      } else {
+        localStorage.removeItem("agent_jwt_token");
+        localStorage.removeItem("agent_user_name");
+        updateAuthUI(null);
+        openAuthModal(false);
+        return false;
+      }
+    } catch (e) {
+      console.warn("Auth check error:", e);
+      openAuthModal(false);
+      return false;
+    }
   }
 
   function showPopupLoginError(msg) {
