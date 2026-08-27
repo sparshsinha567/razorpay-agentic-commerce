@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (resp.ok) {
         const data = await resp.json();
         setAuthSession(token, data);
-        closeAuthModal();
+        openAuthModal(false);
         return true;
       } else {
         localStorage.removeItem("agent_jwt_token");
