@@ -1105,12 +1105,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (cartCheckoutBtn) {
-      if (totalInr > currentSessionLimit) {
+      const hasOutOfStock = cartItems.some(i => i.in_stock === false);
+      if (hasOutOfStock) {
+        cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 transition cursor-pointer";
+        cartCheckoutBtn.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4 shrink-0"></i><span>🚫 Inventory Gate: Out of Stock Item</span>`;
+      } else if (totalInr > currentSessionLimit) {
         cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 transition cursor-pointer";
         cartCheckoutBtn.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4 shrink-0"></i><span>🚫 Exceeds Limit (₹${totalInr.toLocaleString()} > ₹${currentSessionLimit.toLocaleString()})</span>`;
-      } else if (status.toLowerCase().includes("paid") || status.toLowerCase().includes("settled")) {
-        cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer";
-        cartCheckoutBtn.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i><span>✓ Settled (₹${totalInr.toLocaleString()}) &bull; New Checkout</span>`;
       } else {
         cartCheckoutBtn.className = "w-full py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 transition cursor-pointer";
         cartCheckoutBtn.innerHTML = `<i data-lucide="credit-card" class="w-4 h-4 shrink-0"></i><span>Checkout ( ₹${totalInr.toLocaleString()} )</span>`;
@@ -1131,6 +1132,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalInr = getCartTotalInr();
       if (totalInr === 0) {
         showToast("Cart is empty. Please select an item to checkout.", "alert");
+        return;
+      }
+      const outOfStockItem = cartItems.find(i => i.in_stock === false);
+      if (outOfStockItem) {
+        showToast(`🚫 Inventory Gate: Cannot checkout "${outOfStockItem.name}" (Out of Stock). Please remove it from cart.`, "alert");
+        appendMessage("assistant", `🛡️ **Inventory Gate Rejection:** Your cart contains **${outOfStockItem.name}**, which is currently **Out of Stock**. Please remove it to proceed with verified in-stock items.`);
         return;
       }
       if (totalInr > currentSessionLimit) {
@@ -1171,7 +1178,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (detailDate) detailDate.textContent = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true });
 
     if (currentStatusBadge) {
-      if (totalInr > currentSessionLimit) {
+      const hasOutOfStock = cartItems.some(i => i.in_stock === false);
+      if (hasOutOfStock) {
+        currentStatusBadge.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800";
+        currentStatusBadge.textContent = "Blocked · Out of Stock";
+      } else if (totalInr > currentSessionLimit) {
         currentStatusBadge.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800";
         currentStatusBadge.textContent = "Blocked · Guardrail";
       } else if (status.toLowerCase().includes("paid") || status.toLowerCase().includes("settled")) {
@@ -1203,11 +1214,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function addToCart(prod) {
     if (!prod) return;
+    if (prod.in_stock === false) {
+      showToast(`🚫 Inventory Gate: "${prod.name}" is Out of Stock.`, "alert");
+      appendMessage("assistant", `🛡️ **Inventory Gate Rejection (Scenario B):** Item **${prod.name}** is currently marked **Out of Stock** in our warehouse fulfillment node. Autonomous execution is halted.\n\n*Would you like to purchase the AI Developer Starter Kit (₹499) or join the waitlist?*`);
+      return;
+    }
     activeProduct = prod;
     currentActiveOrder = null;
     cartItems.push({ ...prod, instanceId: Date.now() + Math.random() });
     renderCart();
     updateInvoiceDisplay(activeProduct, null, "Open · Verified");
+    showToast(`Added "${prod.name}" to cart`, "success");
   }
 
   function updateActiveOrderDisplay(prod, orderId = null, status = "Open · Verified") {
@@ -1813,6 +1830,11 @@ document.addEventListener("DOMContentLoaded", () => {
       let iconBg = "bg-brand-500/10 text-brand-500";
       if (!p.in_stock) iconBg = "bg-red-100 text-red-600";
 
+      const btnText = p.in_stock ? "Select" : "Out of Stock";
+      const btnClass = p.in_stock
+        ? "text-brand-500 hover:text-brand-600 font-semibold text-xs py-1 px-2 rounded-lg bg-white border border-zinc-200"
+        : "text-red-500 font-semibold text-[11px] py-1 px-2 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 opacity-80 cursor-not-allowed";
+
       card.innerHTML = `
         <div class="w-9 h-9 rounded-lg ${iconBg} flex justify-center items-center shrink-0 font-bold text-sm">
           <i data-lucide="${p.icon || 'package'}" class="w-4 h-4"></i>
@@ -1821,14 +1843,13 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="block font-medium text-sm text-zinc-900 group-hover:text-brand-600 transition truncate">${p.name}</span>
           <span class="text-zinc-500 text-xs font-mono">₹${p.price_inr.toLocaleString()} &middot; ${p.in_stock ? 'In Stock' : 'Out of Stock'}</span>
         </div>
-        <button class="text-brand-500 hover:text-brand-600 font-semibold text-xs py-1 px-2 rounded-lg bg-white border border-zinc-200">
-          Select
+        <button class="${btnClass}">
+          ${btnText}
         </button>
       `;
 
       card.addEventListener("click", () => {
         addToCart(p);
-        showToast(`Added "${p.name}" to cart`, "success");
       });
 
       productsGrid.appendChild(card);
@@ -1843,6 +1864,12 @@ document.addEventListener("DOMContentLoaded", () => {
     products.forEach(p => {
       const card = document.createElement("div");
       card.className = "bg-white border border-zinc-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:border-brand-500 transition";
+
+      const buyBtnText = p.in_stock ? "Add to Cart" : "Out of Stock";
+      const buyBtnClass = p.in_stock
+        ? "buy-full-btn bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition cursor-pointer"
+        : "buy-full-btn bg-zinc-200 dark:bg-zinc-800 text-zinc-400 text-xs font-semibold px-4 py-2 rounded-xl transition cursor-not-allowed";
+
       card.innerHTML = `
         <div>
           <div class="flex justify-between items-start mb-4">
@@ -1859,16 +1886,17 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="text-[11px] text-zinc-400 block">Price</span>
             <span class="text-base font-bold text-zinc-900 font-mono">₹${p.price_inr.toLocaleString()}</span>
           </div>
-          <button class="buy-full-btn bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition cursor-pointer">
-            Add to Cart
+          <button class="${buyBtnClass}">
+            ${buyBtnText}
           </button>
         </div>
       `;
 
       card.querySelector(".buy-full-btn").addEventListener("click", () => {
         addToCart(p);
-        switchView("agents");
-        showToast(`Added "${p.name}" to cart`, "success");
+        if (p.in_stock) {
+          switchView("agents");
+        }
       });
 
       catalogFullGrid.appendChild(card);
